@@ -19,6 +19,10 @@
         body {
             padding-top: 70px;
         }
+
+        .section {
+            display: none;
+        }
     </style>
 </head>
 
@@ -39,14 +43,14 @@
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav pull-right">
                     <li class="active" data-target="product-section"><a href="#">Products</a></li>
-                    <li  data-target="store-section"><a href="#">Stores</a></li>
-                    <li data-target="data-section"><a href="#" data-target="data-section">Data</a></li>
+                    <li data-target="store-section"><a href="#">Stores</a></li>
+                    <li data-target="data-section"><a href="#" data-target="data-section">Store Data</a></li>
                 </ul>
             </div>
             <!--/.nav-collapse -->
         </div>
     </nav>
-    <div class="row-fluid">
+    <div id="tables" class="row-fluid">
         <div class="col-md-12">
             <div id="product-section" class="section">
                 <h1>Products</h1>
@@ -68,13 +72,69 @@
 </div>
 </div>
 </div>
+<div class="modal" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-body">
+        <div class="progress" style="margin-top: 200px;">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                <span class="sr-only">45% Complete</span>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 <script>
     $(document).ready(function () {
 
-        //load data and on success init tables
+        var model;
 
-        $(".navbar-nav li").click(function(e){
+        //load data and on success init tables
+        $.get("api", function (data) {
+            model = data;
+            util.hidePleaseWait();
+            $("#product-section").show();
+
+            $('#product').DataTable(
+                    {
+                        "data": model.products,
+                        "columns": [
+                            {"data": "id", title: "ID"},
+                            {"data": "productname", title: "Product Name"},
+                            {"data": "classid", title: "Class"}
+                        ]
+                    }
+            );
+
+            $('#stores').DataTable(
+                    {
+                        "data": model.stores,
+                        "columns": [
+                            {"data": "id", title: "ID"},
+                            {"data": "storelicenseename", title: "Store Name"},
+                            {"data": "state", title: "State"},
+                            {"data": "zip", title: "Zip"},
+
+                        ]
+                    }
+            );
+
+            $('#data').DataTable(
+                    {
+                        "data": model.storeData,
+                        "columns": [
+                            {"data": "storelicenseename", title: "Store"},
+                            {"data": "productname", title: "Product"},
+                            {"data": "year", title: "Yr"},
+                            {"data": "period", title: "Prd"},
+                            {"data": "retaildollarvol", title: "Ret $"},
+                            {"data": "shelfdollarvolv", title: "Shelf $"}
+
+                        ]
+                    }
+            );
+        });
+
+
+        $(".navbar-nav li").click(function (e) {
             e.stopPropagation();
             $(".navbar-nav li").removeClass("active");
             $(this).addClass("active");
@@ -88,40 +148,24 @@
 
         });
 
-        $('#product').DataTable(
-                {
-                    "ajax": "api",
-                    "columns": [
-                        {"data": "id", title: "ID"},
-                        {"data": "productname", title: "Product Name"},
-                        {"data": "classid", title: "Class"}
-                    ]
-                }
-        );
-
-        $('#stores').DataTable(
-                {
-                    "ajax": "api",
-                    "columns": [
-                        {"data": "id", title: "ID"},
-                        {"data": "productname", title: "Product Name"},
-                        {"data": "classid", title: "Class"}
-                    ]
-                }
-        );
-
-        $('#data').DataTable(
-                {
-                    "ajax": "api",
-                    "columns": [
-                        {"data": "id", title: "ID"},
-                        {"data": "productname", title: "Product Name"},
-                        {"data": "classid", title: "Class"}
-                    ]
-                }
-        );
 
     });
+
+    var util;
+    util = util || (function () {
+        var pleaseWaitDiv = $("#pleaseWaitDialog");
+        return {
+            showPleaseWait: function () {
+                pleaseWaitDiv.modal();
+            },
+            hidePleaseWait: function () {
+                pleaseWaitDiv.modal('hide');
+            }
+
+        };
+    })();
+
+    util.showPleaseWait();
 
     /* for some reason the plugin uses alert.  override popup alert.*/
     function alert(str) {

@@ -8,6 +8,7 @@ import com.insightaction.db.tables.CsvImport;
 import com.insightaction.db.tables.Product;
 import com.insightaction.db.tables.ProductClassType;
 import com.insightaction.db.tables.Store;
+import com.insightaction.db.tables.StoreDataView;
 import com.insightaction.db.tables.StoreProductData;
 import com.insightaction.db.tables.Vendor;
 
@@ -34,7 +35,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Insightaction extends SchemaImpl {
 
-	private static final long serialVersionUID = -2127831031;
+	private static final long serialVersionUID = 818790010;
 
 	/**
 	 * The reference instance of <code>insightaction</code>
@@ -61,6 +62,7 @@ public class Insightaction extends SchemaImpl {
 			Product.PRODUCT,
 			ProductClassType.PRODUCT_CLASS_TYPE,
 			Store.STORE,
+			StoreDataView.STORE_DATA_VIEW,
 			StoreProductData.STORE_PRODUCT_DATA,
 			Vendor.VENDOR);
 	}

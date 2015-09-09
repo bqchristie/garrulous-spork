@@ -8,6 +8,7 @@ import com.insightaction.db.tables.CsvImport;
 import com.insightaction.db.tables.Product;
 import com.insightaction.db.tables.ProductClassType;
 import com.insightaction.db.tables.Store;
+import com.insightaction.db.tables.StoreDataView;
 import com.insightaction.db.tables.StoreProductData;
 import com.insightaction.db.tables.Vendor;
 
@@ -46,6 +47,11 @@ public class Tables {
 	 * The table insightaction.STORE
 	 */
 	public static final Store STORE = com.insightaction.db.tables.Store.STORE;
+
+	/**
+	 * VIEW
+	 */
+	public static final StoreDataView STORE_DATA_VIEW = com.insightaction.db.tables.StoreDataView.STORE_DATA_VIEW;
 
 	/**
 	 * The table insightaction.STORE_PRODUCT_DATA
