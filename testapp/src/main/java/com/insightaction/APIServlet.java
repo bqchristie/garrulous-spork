@@ -39,16 +39,31 @@ public class APIServlet extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public APIServlet() throws SQLException {
+    public APIServlet() {
         super();
-        String userName = "root";
-        String password = "";
-        String url = "jdbc:mysql://localhost:3306/insightaction";
 
-        Connection conn = DriverManager.getConnection(url, userName, password);
+    }
+
+
+    public void init(ServletConfig config) throws ServletException {
+        String userName = config.getInitParameter("dbuser");
+        String password = config.getInitParameter("dbpasssword");
+        String url = config.getInitParameter("dburl");
+
+        try {
+            initData(userName,password,url);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ServletException(e);
+        }
+
+
+    }
+
+    private void initData(String username, String password, String url) throws SQLException {
+
+        Connection conn = DriverManager.getConnection(url, username, password);
         DSLContext create = DSL.using(conn, SQLDialect.MYSQL);
-
-
         List<Product> products = create.select().from(Tables.PRODUCT).fetchInto(Product.class);
         List<Store> stores  = create.select().from(Tables.STORE).fetchInto(Store.class);
         List<StoreDataView> storeDataView  = create.select().from(Tables.STORE_DATA_VIEW).fetchInto(StoreDataView.class);
@@ -58,11 +73,6 @@ public class APIServlet extends HttpServlet {
         view.setStores(stores);
         view.setStoreData(storeDataView);
         data.put("data",view);
-    }
-
-
-    public void init(ServletConfig config) throws ServletException{
-
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
